@@ -4,7 +4,7 @@
 	export let form;
 </script>
 
-<main class="w-full h-screen flex items-center justify-center bg-gray-100">
+<main class="w-full h-screen flex items-center justify-center bg-gray-100 p-5">
 	<form class="shadow-md rounded-lg w-[400px] bg-white p-8" method="POST">
 		<h1 class="text-3xl text-neutral-950 font-bold mb-1 text-center">Sign In</h1>
 		<p class="text-gray-500 mb-6 text-center">Please enter your details to sign in.</p>
