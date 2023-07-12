@@ -2,6 +2,11 @@
 	export let data;
 </script>
 
+<svelte:head>
+	<title>Profile | Todolist</title>
+	<meta name="description" content="a todolist app" />
+</svelte:head>
+
 <main class="w-full h-screen flex items-center justify-center bg-gray-100 p-5">
 	<section class="shadow-md rounded-lg w-[400px] bg-white p-8">
 		<h1 class="text-3xl text-neutral-950 font-bold mb-1 text-center">Profile</h1>

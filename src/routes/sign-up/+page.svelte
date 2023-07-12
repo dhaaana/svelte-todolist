@@ -2,6 +2,11 @@
 	export let form;
 </script>
 
+<svelte:head>
+	<title>Sign Up | Todolist</title>
+	<meta name="description" content="a todolist app" />
+</svelte:head>
+
 <main class="w-full h-screen flex items-center justify-center bg-gray-100 p-5">
 	<form class="shadow-md rounded-lg w-[400px] bg-white p-6 sm:p-8" method="POST">
 		<h1 class="text-3xl text-neutral-950 font-bold mb-1 text-center">Sign Up</h1>
