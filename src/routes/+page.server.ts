@@ -3,7 +3,6 @@ import { verifyAuthJWT } from '$lib/server/jwt.js';
 import { todosTable, usersTable } from '$lib/server/schema.js';
 import { redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import type { Actions, PageServerLoad } from './$types';
 
 export const load = async ({ cookies, fetch }) => {
 	// fetch the current user's todos from the server

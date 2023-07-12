@@ -4,6 +4,7 @@
 	import { fly, scale, slide } from 'svelte/transition';
 
 	export let data;
+	let element: HTMLElement;
 	let deleting: number[] = [];
 	let creating = false;
 	let isDropdownOpen = false;
@@ -18,14 +19,72 @@
 		// check if the new focus target doesn't present in the dropdown tree (exclude ul\li padding area because relatedTarget, in this case, will be null)
 		isDropdownOpen = false;
 	};
+
+	const scrollToBottom = async (node: HTMLElement) => {
+		node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
+	};
 </script>
 
 <svelte:head>
-	<title>Dhana's todolist</title>
+	<title>{data.user.firstName}'s Todolist</title>
 	<meta name="description" content="a todolist app" />
 </svelte:head>
 
-<main class="w-full min-h-screen bg-gray-100 p-5 sm:p-10">
+<main class="w-full h-screen overflow-y-auto bg-gray-100 p-5 sm:p-10" bind:this={element}>
+	<div class="fixed z-50 bottom-0 w-full grid grid-cols-12 inset-x-0">
+		<form
+			method="POST"
+			action="?/create"
+			class="col-start-1 col-end-13 sm:col-start-5 sm:col-end-9 bg-white p-3 rounded-lg shadow-md border flex xl:flex-row flex-col gap-2"
+			use:enhance={() => {
+				creating = true;
+
+				return async ({ update }) => {
+					await update();
+					creating = false;
+					scrollToBottom(element);
+				};
+			}}
+		>
+			<div class="w-full flex flex-col gap-y-2">
+				<input
+					type="text"
+					class="bg-gray-50 border-gray-300 border-2 text-gray-700 rounded-lg p-2 focus:border-orange-500 focus:outline-none"
+					placeholder="Title"
+					name="title"
+				/>
+				<input
+					type="text"
+					class="bg-gray-50 border-gray-300 border-2 text-gray-700 rounded-lg p-2 focus:border-orange-500 focus:outline-none"
+					placeholder="Description"
+					name="description"
+				/>
+			</div>
+			<button
+				class="bg-orange-500 min-w-[100px] flex justify-center items-center hover:bg-orange-600 disabled:bg-orange-600 disabled:cursor-not-allowed text-lg font-medium text-white rounded-lg py-2 px-4"
+				type="submit"
+				disabled={creating}
+			>
+				{#if creating}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="30"
+						height="30"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="lucide lucide-loader-2 animate-spin"
+						><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg
+					>
+				{:else}
+					Add Todo
+				{/if}
+			</button>
+		</form>
+	</div>
 	<div class="grid grid-cols-12">
 		<div
 			class="col-span-12 mb-5 flex justify-end gap-x-2 sm:px-6"
@@ -55,9 +114,11 @@
 				{/if}
 			{/if}
 		</div>
-		<h1 class="text-3xl font-bold text-center col-span-12 mb-4">Dhana's To-Do List</h1>
+		<h1 class="text-3xl font-bold text-center col-span-12 mb-8">
+			{data.user.firstName}'s To-Do List
+		</h1>
 
-		<div class="col-start-1 col-end-13 sm:col-start-5 sm:col-end-9 grid grid-cols-1 gap-2 mb-4">
+		<div class="col-start-1 col-end-13 sm:col-start-5 sm:col-end-9 grid grid-cols-1 gap-2 pb-24">
 			{#each data.todos.filter((todo) => !deleting.includes(todo.id)) as todo (todo.id)}
 				<div
 					class="flex bg-white rounded-lg flex items-center justify-between p-4 shadow-md"
@@ -156,57 +217,5 @@
 				</div>
 			{/each}
 		</div>
-
-		<form
-			method="POST"
-			action="?/create"
-			class="col-start-1 col-end-13 sm:col-start-5 sm:col-end-9 bg-white p-3 rounded-lg shadow-md flex xl:flex-row flex-col gap-2"
-			use:enhance={() => {
-				creating = true;
-
-				return async ({ update }) => {
-					await update();
-					creating = false;
-				};
-			}}
-		>
-			<div class="w-full flex flex-col gap-y-2">
-				<input
-					type="text"
-					class="bg-gray-50 border-gray-300 border-2 text-gray-700 rounded-lg p-2 focus:border-orange-500 focus:outline-none"
-					placeholder="Title"
-					name="title"
-				/>
-				<input
-					type="text"
-					class="bg-gray-50 border-gray-300 border-2 text-gray-700 rounded-lg p-2 focus:border-orange-500 focus:outline-none"
-					placeholder="Description"
-					name="description"
-				/>
-			</div>
-			<button
-				class="bg-orange-500 min-w-[100px] flex justify-center items-center hover:bg-orange-600 disabled:bg-orange-600 disabled:cursor-not-allowed text-lg font-medium text-white rounded-lg py-2 px-4"
-				type="submit"
-				disabled={creating}
-			>
-				{#if creating}
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="30"
-						height="30"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="lucide lucide-loader-2 animate-spin"
-						><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg
-					>
-				{:else}
-					Add Todo
-				{/if}
-			</button>
-		</form>
 	</div>
 </main>
